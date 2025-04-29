@@ -11,4 +11,12 @@ input[type="range"] {
 img {
   border: 1px solid #ccc; /* Thêm viền nhẹ cho ảnh */
   margin-top: 10px; /* Tạo khoảng cách giữa ảnh và các thanh kéo */
+  transition: transform 0.2s ease-in-out; /* Thêm hiệu ứng khi phóng to/thu nhỏ */
+}
+
+button {
+  padding: 10px 20px;
+  margin-top: 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
