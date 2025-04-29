@@ -3,7 +3,7 @@ body {
   font-family: Arial, sans-serif;
 }
 
-canvas {
-  border: 1px solid #000;
-  margin-top: 10px;
+input[type="range"] {
+  width: 250px;
+  margin: 10px;
 }
