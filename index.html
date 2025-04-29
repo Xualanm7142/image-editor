@@ -2,25 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Chỉnh sửa ảnh online</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chỉnh sửa ảnh trực tuyến</title>
+  <link rel="stylesheet" href="style.css"> <!-- Liên kết với file CSS -->
 </head>
 <body>
-  <h1>Trình chỉnh sửa ảnh</h1>
-
+  <h1>Chỉnh sửa ảnh trực tuyến</h1>
+  
+  <!-- Input tải ảnh lên -->
   <input type="file" id="upload" accept="image/*"><br><br>
-
+  
+  <!-- Các thanh kéo để chỉnh sửa ảnh -->
   <label>Độ sáng</label>
   <input type="range" id="brightness" min="0" max="200" value="100"><br>
-
+  
   <label>Độ tương phản</label>
   <input type="range" id="contrast" min="0" max="200" value="100"><br>
-
+  
   <label>Bão hòa màu</label>
   <input type="range" id="saturate" min="0" max="200" value="100"><br><br>
-
+  
+  <!-- Thẻ img để hiển thị ảnh -->
   <img id="img" src="" alt="Chọn ảnh" style="max-width: 90%;"><br><br>
-
+  
+  <!-- Liên kết đến file JavaScript -->
   <script src="script.js"></script>
 </body>
 </html>
