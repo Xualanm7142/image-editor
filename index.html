@@ -2,15 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Online Image Editor</title>
+  <title>Chỉnh sửa ảnh online</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Chỉnh sửa ảnh trực tuyến</h1>
+  <h1>Trình chỉnh sửa ảnh</h1>
+
   <input type="file" id="upload" accept="image/*"><br><br>
-  <canvas id="canvas"></canvas><br><br>
-  <button onclick="applyGrayscale()">Làm mờ màu</button>
-  <button onclick="resetImage()">Khôi phục ảnh gốc</button>
+
+  <label>Độ sáng</label>
+  <input type="range" id="brightness" min="0" max="200" value="100"><br>
+
+  <label>Độ tương phản</label>
+  <input type="range" id="contrast" min="0" max="200" value="100"><br>
+
+  <label>Bão hòa màu</label>
+  <input type="range" id="saturate" min="0" max="200" value="100"><br><br>
+
+  <img id="img" src="" alt="Chọn ảnh" style="max-width: 90%;"><br><br>
 
   <script src="script.js"></script>
 </body>
