@@ -1,9 +1,14 @@
 body {
-  text-align: center;
-  font-family: Arial, sans-serif;
+  text-align: center; /* Căn giữa nội dung */
+  font-family: Arial, sans-serif; /* Chọn font chữ */
 }
 
 input[type="range"] {
-  width: 250px;
-  margin: 10px;
+  width: 250px; /* Đặt chiều rộng cho thanh kéo */
+  margin: 10px; /* Tạo khoảng cách giữa các phần tử */
+}
+
+img {
+  border: 1px solid #ccc; /* Thêm viền nhẹ cho ảnh */
+  margin-top: 10px; /* Tạo khoảng cách giữa ảnh và các thanh kéo */
 }
