@@ -5,9 +5,27 @@ const edited = document.getElementById("edited");
 const brightness = document.getElementById("brightness");
 const contrast = document.getElementById("contrast");
 const saturate = document.getElementById("saturate");
+
+const valBrightness = document.getElementById("val-brightness");
+const valContrast = document.getElementById("val-contrast");
+const valSaturate = document.getElementById("val-saturate");
+
 const saveBtn = document.getElementById("saveBtn");
 
-// Khi người dùng chọn ảnh
+// Cập nhật bộ lọc cho ảnh chỉnh sửa
+function updateFilter() {
+  valBrightness.textContent = `${brightness.value}%`;
+  valContrast.textContent = `${contrast.value}%`;
+  valSaturate.textContent = `${saturate.value}%`;
+
+  edited.style.filter = `
+    brightness(${brightness.value}%)
+    contrast(${contrast.value}%)
+    saturate(${saturate.value}%)
+  `;
+}
+
+// Khi người dùng tải ảnh lên
 upload.addEventListener("change", (e) => {
   const file = e.target.files[0];
   const reader = new FileReader();
@@ -22,15 +40,7 @@ upload.addEventListener("change", (e) => {
   }
 });
 
-// Cập nhật filter cho ảnh chỉnh sửa
-function updateFilter() {
-  edited.style.filter = `
-    brightness(${brightness.value}%)
-    contrast(${contrast.value}%)
-    saturate(${saturate.value}%)
-  `;
-}
-
+// Cập nhật filter khi thay đổi thông số
 [brightness, contrast, saturate].forEach(input => {
   input.addEventListener("input", updateFilter);
 });
@@ -55,4 +65,3 @@ saveBtn.addEventListener("click", () => {
   link.href = canvas.toDataURL("image/png");
   link.click();
 });
-
