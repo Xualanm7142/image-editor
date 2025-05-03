@@ -1,32 +1,32 @@
-<body>
-  <h1>So sánh ảnh Trước và Sau chỉnh sửa</h1>
+body>
+  <div class="container">
+    <h1>So sánh ảnh Trước và Sau chỉnh sửa</h1>
 
-  <input type="file" id="upload" accept="image/*" /><br><br>
+    <input type="file" id="upload" accept="image/*" /><br><br>
 
-  <!-- 1. Hình ảnh nằm phía trên -->
-  <div class="image-container">
-    <div>
-      <h3>Ảnh gốc</h3>
-      <img id="original" src="" alt="Ảnh gốc" />
+    <div class="image-container">
+      <div>
+        <h3>Ảnh gốc</h3>
+        <img id="original" src="" alt="Ảnh gốc" />
+      </div>
+      <div>
+        <h3>Ảnh đã chỉnh sửa</h3>
+        <img id="edited" src="" alt="Ảnh đã chỉnh sửa" />
+      </div>
     </div>
-    <div>
-      <h3>Ảnh đã chỉnh sửa</h3>
-      <img id="edited" src="" alt="Ảnh đã chỉnh sửa" />
+
+    <div class="controls">
+      <label>Độ sáng</label><br>
+      <input type="range" id="brightness" min="0" max="200" value="100"><br>
+
+      <label>Độ tương phản</label><br>
+      <input type="range" id="contrast" min="0" max="200" value="100"><br>
+
+      <label>Bão hòa màu</label><br>
+      <input type="range" id="saturate" min="0" max="200" value="100"><br><br>
+
+      <button id="saveBtn">Lưu ảnh</button>
     </div>
-  </div>
-
-  <!-- 2. Các điều chỉnh nằm phía dưới -->
-  <div class="controls">
-    <label>Độ sáng</label>
-    <input type="range" id="brightness" min="0" max="200" value="100"><br>
-
-    <label>Độ tương phản</label>
-    <input type="range" id="contrast" min="0" max="200" value="100"><br>
-
-    <label>Bão hòa màu</label>
-    <input type="range" id="saturate" min="0" max="200" value="100"><br><br>
-
-    <button id="saveBtn">Lưu ảnh</button>
   </div>
 
   <script src="script.js"></script>
