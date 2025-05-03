@@ -1,38 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chỉnh sửa ảnh trực tuyến</title>
-  <link rel="stylesheet" href="style.css"> <!-- Liên kết với file CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Chỉnh sửa ảnh trực tuyến</h1>
-  
-  <!-- Input tải ảnh lên -->
-  <input type="file" id="upload" accept="image/*"><br><br>
-  
-  <!-- Các thanh kéo để chỉnh sửa ảnh -->
-  <label>Độ sáng</label>
-  <input type="range" id="brightness" min="0" max="200" value="100"><br>
-  
-  <label>Độ tương phản</label>
-  <input type="range" id="contrast" min="0" max="200" value="100"><br>
-  
-  <label>Bão hòa màu</label>
-  <input type="range" id="saturate" min="0" max="200" value="100"><br><br>
-  
-  <!-- Thanh kéo phóng to/thu nhỏ ảnh -->
-  <label>Phóng to/Thu nhỏ</label>
-  <input type="range" id="zoom" min="0.5" max="3" step="0.1" value="1"><br><br>
-  
-  <!-- Thẻ img để hiển thị ảnh -->
-  <img id="img" src="" alt="Chọn ảnh" style="max-width: 90%;"><br><br>
+  <h1>So sánh ảnh Trước và Sau chỉnh sửa</h1>
 
-  <!-- Nút lưu ảnh -->
-  <button id="saveBtn">Lưu ảnh</button>
+  <input type="file" id="upload" accept="image/*" /><br><br>
 
-  <!-- Liên kết đến file JavaScript -->
+  <div class="controls">
+    <label>Độ sáng</label>
+    <input type="range" id="brightness" min="0" max="200" value="100"><br>
+
+    <label>Độ tương phản</label>
+    <input type="range" id="contrast" min="0" max="200" value="100"><br>
+
+    <label>Bão hòa màu</label>
+    <input type="range" id="saturate" min="0" max="200" value="100"><br><br>
+
+    <button id="saveBtn">Lưu ảnh</button>
+  </div>
+
+  <div class="image-container">
+    <div>
+      <h3>Ảnh gốc</h3>
+      <img id="original" src="" alt="Ảnh gốc" />
+    </div>
+    <div>
+      <h3>Ảnh đã chỉnh sửa</h3>
+      <img id="edited" src="" alt="Ảnh đã chỉnh sửa" />
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
