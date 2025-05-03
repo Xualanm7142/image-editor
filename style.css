@@ -18,12 +18,8 @@ body {
   background: white;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0,0,0,0.1);
-  max-width: 800px;
+  max-width: 900px;
   width: 100%;
-}
-
-h1 {
-  margin-bottom: 20px;
 }
 
 .image-container {
@@ -34,16 +30,12 @@ h1 {
   margin-bottom: 20px;
 }
 
-.image-container div {
-  text-align: center;
-}
-
-img {
+canvas {
   max-width: 300px;
   max-height: 300px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background: #eee;
+  cursor: crosshair;
 }
 
 .controls {
@@ -55,7 +47,7 @@ input[type="range"] {
   margin-bottom: 10px;
 }
 
-button {
+button, select {
   padding: 8px 16px;
   font-size: 16px;
   border: none;
@@ -63,9 +55,10 @@ button {
   background-color: #1976d2;
   color: white;
   cursor: pointer;
-  margin-top: 10px;
+  margin: 5px;
 }
 
 button:hover {
   background-color: #1565c0;
 }
+
