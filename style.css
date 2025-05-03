@@ -1,22 +1,30 @@
 body {
-  text-align: center; /* Căn giữa nội dung */
-  font-family: Arial, sans-serif; /* Chọn font chữ */
+  text-align: center;
+  font-family: Arial, sans-serif;
 }
 
-input[type="range"] {
-  width: 250px; /* Đặt chiều rộng cho thanh kéo */
-  margin: 10px; /* Tạo khoảng cách giữa các phần tử */
+.controls {
+  margin-bottom: 20px;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.image-container div {
+  text-align: center;
 }
 
 img {
-  border: 1px solid #ccc; /* Thêm viền nhẹ cho ảnh */
-  margin-top: 10px; /* Tạo khoảng cách giữa ảnh và các thanh kéo */
-  transition: transform 0.2s ease-in-out; /* Thêm hiệu ứng khi phóng to/thu nhỏ */
+  max-width: 300px;
+  max-height: 300px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
 }
 
-button {
-  padding: 10px 20px;
-  margin-top: 20px;
-  font-size: 16px;
-  cursor: pointer;
+input[type="range"] {
+  width: 250px;
 }
