@@ -1,74 +1,41 @@
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f2f2f2;
-  margin: 0;
-  padding: 40px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #333;
-}
+</head>
+<body>
+  <h1>Trình chỉnh sửa ảnh trực tuyến</h1>
+  <div class="container">
+    <input type="file" id="upload" accept="image/*"><br><br>
 
-h1 {
-  margin-bottom: 20px;
-  color: #2c3e50;
-}
+    <div class="controls">
+      <label>Sáng: <span id="val-brightness">100%</span></label>
+      <input type="range" id="brightness" min="0" max="200" value="100">
 
-.container {
-  background: white;
-  padding: 25px 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
-  width: 100%;
-}
+      <label>Tương phản: <span id="val-contrast">100%</span></label>
+      <input type="range" id="contrast" min="0" max="200" value="100">
 
-.controls {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+      <label>Bão hòa: <span id="val-saturate">100%</span></label>
+      <input type="range" id="saturate" min="0" max="200" value="100">
 
-.controls label {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
+      <label>Bộ lọc:</label>
+      <select id="filter">
+        <option value="none">Nguyên bản</option>
+        <option value="grayscale">Đơn sắc</option>
+        <option value="blur">Blur</option>
+        <option value="warm">Nóng</option>
+        <option value="cool">Mát</option>
+      </select>
 
-input[type="range"] {
-  width: 100%;
-}
+      <label>Định dạng lưu:</label>
+      <select id="format">
+        <option value="png">PNG</option>
+        <option value="jpeg">JPG</option>
+      </select><br>
 
-select, input[type="file"], button {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
+      <button id="cropBtn">Bật chế độ Crop</button>
+      <button id="undoCropBtn">Hoàn tác Crop</button>
+      <button id="saveBtn">Lưu ảnh</button>
+    </div>
 
-button {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-button:hover {
-  background-color: #2980b9;
-}
-
-.canvas-container {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-
-canvas {
-  max-width: 100%;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+    <div class="canvas-container">
+      <canvas id="originalCanvas"></canvas>
+      <canvas id="editedCanvas"></canvas>
+    </div>
+  </div>
