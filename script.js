@@ -116,5 +116,7 @@ editedCanvas.addEventListener("mousedown", (e) => {
   };
 });
 
-editedCanvas.addEventListener("mouseup", (e
+editedCanvas.addEventListener("mousemove", (e) => {
+  if (!cropMode || !cropStart) return;
 
+  const rect =
