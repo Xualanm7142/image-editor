@@ -2,55 +2,89 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chỉnh sửa và Cắt ảnh</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Chỉnh sửa ảnh trực tuyến</h1>
+  <title>Trình chỉnh sửa ảnh trực tuyến</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+    }
 
-    <input type="file" id="upload" accept="image/*"><br><br>
+    h1 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
 
-    <div class="image-container">
-      <div>
-        <h3>Ảnh gốc</h3>
-        <canvas id="originalCanvas"></canvas>
-      </div>
-      <div>
-        <h3>Ảnh chỉnh sửa</h3>
-        <canvas id="editedCanvas"></canvas>
-      </div>
-    </div>
+    .container {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      max-width: 900px;
+      width: 100%;
+    }
 
-    <div class="controls">
-      <label>Độ sáng: <span id="val-brightness">100%</span></label><br>
-      <input type="range" id="brightness" min="0" max="200" value="100"><br>
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-      <label>Độ tương phản: <span id="val-contrast">100%</span></label><br>
-      <input type="range" id="contrast" min="0" max="200" value="100"><br>
+    .controls label {
+      font-weight: 600;
+    }
 
-      <label>Bão hòa màu: <span id="val-saturate">100%</span></label><br>
-      <input type="range" id="saturate" min="0" max="200" value="100"><br><br>
+    .sliders label span {
+      float: right;
+    }
 
-      <label>Định dạng ảnh:</label>
-      <select id="format">
-        <option value="png">PNG</option>
-        <option value="jpeg">JPG</option>
-      </select><br><br>
-      <label>Bộ lọc:</label>
-<select id="filter">
-  <option value="none">Nguyên bản</option>
-  <option value="grayscale">Đơn sắc</option>
-  <option value="blur">Blur</option>
-</select><br><br>
+    input[type="range"] {
+      width: 100%;
+    }
 
-      <button id="cropBtn">Bật chế độ Crop</button>
-      <button id="saveBtn">Lưu ảnh</button>
-    </div>
-  </div>
+    select, input[type="file"], button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
 
-  <script src="script.js"></script>
-</body>
-</html>
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
 
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .canvas-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    canvas {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .crop-box {
+      position: absolute;
+      border: 2px dashed #e74c3c;
+      pointer-events: none;
+      z-index: 10;
+    }
