@@ -1,152 +1,150 @@
-const upload = document.getElementById("upload");
-    const originalCanvas = document.getElementById("originalCanvas");
-    const editedCanvas = document.getElementById("editedCanvas");
-    const oCtx = originalCanvas.getContext("2d");
-    const eCtx = editedCanvas.getContext("2d");
+const upload = document.getElementById('upload');
+const originalCanvas = document.getElementById('originalCanvas');
+const editedCanvas = document.getElementById('editedCanvas');
+const brightnessSlider = document.getElementById('brightness');
+const contrastSlider = document.getElementById('contrast');
+const saturateSlider = document.getElementById('saturate');
+const filterSelect = document.getElementById('filter');
+const formatSelect = document.getElementById('format');
+const cropBtn = document.getElementById('cropBtn');
+const undoCropBtn = document.getElementById('undoCropBtn');
+const saveBtn = document.getElementById('saveBtn');
+const valBrightness = document.getElementById('val-brightness');
+const valContrast = document.getElementById('val-contrast');
+const valSaturate = document.getElementById('val-saturate');
 
-    const brightness = document.getElementById("brightness");
-    const contrast = document.getElementById("contrast");
-    const saturate = document.getElementById("saturate");
-    const filterSelect = document.getElementById("filter");
-    const formatSelect = document.getElementById("format");
+const originalCtx = originalCanvas.getContext('2d');
+const editedCtx = editedCanvas.getContext('2d');
 
-    const valBrightness = document.getElementById("val-brightness");
-    const valContrast = document.getElementById("val-contrast");
-    const valSaturate = document.getElementById("val-saturate");
+let img = new Image();
+let isCropping = false;
+let cropStartX, cropStartY, cropEndX, cropEndY;
+let originalImageData = null;
 
-    const saveBtn = document.getElementById("saveBtn");
-    const cropBtn = document.getElementById("cropBtn");
-    const undoCropBtn = document.getElementById("undoCropBtn");
+function updateCanvasSize(canvas, width, height) {
+  canvas.width = width;
+  canvas.height = height;
+}
 
-    let image = new Image();
-    let cropMode = false;
-    let cropStart = null;
-    let cropEnd = null;
-    let originalEditedImageData = null;
+function drawImageToCanvas() {
+  if (!img) return; // Ensure image exists
+  updateCanvasSize(originalCanvas, img.width, img.height);
+  updateCanvasSize(editedCanvas, img.width, img.height);
+  originalCtx.drawImage(img, 0, 0);
+  applyFilters(); // draw to edited canvas
+}
 
-    function drawOriginal() {
-      originalCanvas.width = image.width;
-      originalCanvas.height = image.height;
-      editedCanvas.width = image.width;
-      editedCanvas.height = image.height;
-      oCtx.drawImage(image, 0, 0);
-      updateEdited();
-    }
+function applyFilters() {
+  const brightness = brightnessSlider.value;
+  const contrast = contrastSlider.value;
+  const saturate = saturateSlider.value;
+  const selectedFilter = filterSelect.value;
 
-    function updateEdited() {
-      eCtx.clearRect(0, 0, editedCanvas.width, editedCanvas.height);
+  valBrightness.textContent = brightness + '%';
+  valContrast.textContent = contrast + '%';
+  valSaturate.textContent = saturate + '%';
 
-      let filters = [
-        `brightness(${brightness.value}%)`,
-        `contrast(${contrast.value}%)`,
-        `saturate(${saturate.value}%)`
-      ];
+  editedCtx.clearRect(0, 0, editedCanvas.width, editedCanvas.height);
+  editedCtx.drawImage(originalCanvas, 0, 0);
 
-      const selectedFilter = filterSelect.value;
+  let filterString = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`;
 
-      if (selectedFilter === "grayscale") {
-        filters.push("grayscale(100%)");
-      } else if (selectedFilter === "blur") {
-        filters.push("blur(3px)");
-      }
+  switch (selectedFilter) {
+    case 'grayscale':
+      filterString += ' grayscale(100%)';
+      break;
+    case 'blur':
+      filterString += ' blur(3px)';
+      break;
+    case 'warm':
+      filterString += ' sepia(0.3) hue-rotate(-10deg)';
+      break;
+    case 'cool':
+      filterString += ' hue-rotate(180deg) saturate(120%)';
+      break;
+  }
 
-      eCtx.filter = filters.join(" ");
-      eCtx.drawImage(originalCanvas, 0, 0);
+  editedCtx.filter = filterString;
+  editedCtx.drawImage(originalCanvas, 0, 0);
+  editedCtx.filter = 'none'; // reset filter
+}
 
-      if (selectedFilter === "warm" || selectedFilter === "cool") {
-        let imgData = eCtx.getImageData(0, 0, editedCanvas.width, editedCanvas.height);
-        for (let i = 0; i < imgData.data.length; i += 4) {
-          if (selectedFilter === "warm") {
-            imgData.data[i] = Math.min(imgData.data[i] + 30, 255);     // R
-            imgData.data[i + 2] = Math.max(imgData.data[i + 2] - 10, 0); // B
-          } else {
-            imgData.data[i] = Math.max(imgData.data[i] - 10, 0);       // R
-            imgData.data[i + 2] = Math.min(imgData.data[i + 2] + 30, 255); // B
-          }
-        }
-        eCtx.putImageData(imgData, 0, 0);
-      }
+function saveImage() {
+  const format = formatSelect.value;
+  const mimeType = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+  const dataUrl = editedCanvas.toDataURL(mimeType);
 
-      updateLabels();
-    }
+  const link = document.createElement('a');
+  link.href = dataUrl;
+  link.download = `edited.${format}`;
+  link.click();
+}
 
-    function updateLabels() {
-      valBrightness.textContent = `${brightness.value}%`;
-      valContrast.textContent = `${contrast.value}%`;
-      valSaturate.textContent = `${saturate.value}%`;
-    }
+// --- Crop ---
+editedCanvas.addEventListener('mousedown', e => {
+  if (!isCropping) return;
+  const rect = editedCanvas.getBoundingClientRect();
+  cropStartX = e.clientX - rect.left;
+  cropStartY = e.clientY - rect.top;
+});
 
-    upload.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+editedCanvas.addEventListener('mouseup', e => {
+  if (!isCropping) return;
+  const rect = editedCanvas.getBoundingClientRect();
+  cropEndX = e.clientX - rect.left;
+  cropEndY = e.clientY - rect.top;
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        image.onload = drawOriginal;
-        image.src = reader.result;
-      };
-      reader.readAsDataURL(file);
-    });
+  const x = Math.min(cropStartX, cropEndX);
+  const y = Math.min(cropStartY, cropEndY);
+  const width = Math.abs(cropEndX - cropStartX);
+  const height = Math.abs(cropEndY - cropStartY);
 
-    [brightness, contrast, saturate].forEach(input => {
-      input.addEventListener("input", updateEdited);
-    });
+  if (width === 0 || height === 0) return;
 
-    filterSelect.addEventListener("change", updateEdited);
+  // Save current image data for undo
+  originalImageData = originalCtx.getImageData(0, 0, originalCanvas.width, originalCanvas.height);
 
-    saveBtn.addEventListener("click", () => {
-      const format = formatSelect.value;
-      const link = document.createElement("a");
-      link.download = `edited-image.${format}`;
-      link.href = editedCanvas.toDataURL(`image/${format}`);
-      link.click();
-    });
+  // Crop both canvases
+  const croppedImage = editedCtx.getImageData(x, y, width, height);
+  updateCanvasSize(originalCanvas, width, height);
+  updateCanvasSize(editedCanvas, width, height);
+  originalCtx.putImageData(croppedImage, 0, 0);
+  applyFilters();
+});
 
-    cropBtn.addEventListener("click", () => {
-      cropMode = !cropMode;
-      cropBtn.textContent = cropMode ? "Chế độ Crop: Bật" : "Bật chế độ Crop";
-    });
+cropBtn.addEventListener('click', () => {
+  isCropping = !isCropping;
+  cropBtn.textContent = isCropping ? 'Đang crop – Click để tắt' : 'Bật chế độ Crop';
+});
 
-    editedCanvas.addEventListener("mousedown", (e) => {
-      if (!cropMode) return;
-      const rect = editedCanvas.getBoundingClientRect();
-      cropStart = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      };
-    });
+undoCropBtn.addEventListener('click', () => {
+  if (originalImageData) {
+    updateCanvasSize(originalCanvas, originalImageData.width, originalImageData.height);
+    updateCanvasSize(editedCanvas, originalImageData.width, originalImageData.height);
+    originalCtx.putImageData(originalImageData, 0, 0);
+    applyFilters();
+  }
+});
 
-    editedCanvas.addEventListener("mouseup", (e) => {
-      if (!cropMode || !cropStart) return;
+// --- Sự kiện ---
+upload.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-      const rect = editedCanvas.getBoundingClientRect();
-      const xEnd = e.clientX - rect.left;
-      const yEnd = e.clientY - rect.top;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const image = new Image();
+    image.onload = () => {
+      img = image;
+      drawImageToCanvas();
+    };
+    image.src = evt.target.result;
+  };
+  reader.readAsDataURL(file);
+});
 
-      const x = Math.min(cropStart.x, xEnd);
-      const y = Math.min(cropStart.y, yEnd);
-      const width = Math.abs(cropStart.x - xEnd);
-      const height = Math.abs(cropStart.y - yEnd);
+[brightnessSlider, contrastSlider, saturateSlider, filterSelect].forEach(el =>
+  el.addEventListener('input', applyFilters)
+);
 
-      originalEditedImageData = eCtx.getImageData(0, 0, editedCanvas.width, editedCanvas.height);
-
-      const croppedImage = eCtx.getImageData(x, y, width, height);
-      editedCanvas.width = width;
-      editedCanvas.height = height;
-      eCtx.putImageData(croppedImage, 0, 0);
-
-      cropStart = null;
-      cropMode = false;
-      cropBtn.textContent = "Bật chế độ Crop";
-    });
-
-    undoCropBtn.addEventListener("click", () => {
-      if (!originalEditedImageData) return;
-      editedCanvas.width = originalEditedImageData.width;
-      editedCanvas.height = originalEditedImageData.height;
-      eCtx.putImageData(originalEditedImageData, 0, 0);
-      originalEditedImageData = null;
-    });
-  </script>
-</body>
-</html>
+saveBtn.addEventListener('click', saveImage);
