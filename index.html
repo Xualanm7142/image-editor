@@ -2,7 +2,6 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trình chỉnh sửa ảnh trực tuyến</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -19,4 +18,34 @@
       <input type="range" id="contrast" min="0" max="200" value="100">
 
       <label>Bão hòa: <span id="val-saturate">100%</span></label>
-      <input type="range" id="saturate" min="0" max="200" value="10
+      <input type="range" id="saturate" min="0" max="200" value="100">
+
+      <label>Bộ lọc:</label>
+      <select id="filter">
+        <option value="none">Nguyên bản</option>
+        <option value="grayscale">Đơn sắc</option>
+        <option value="blur">Blur</option>
+        <option value="warm">Nóng</option>
+        <option value="cool">Mát</option>
+      </select>
+
+      <label>Định dạng lưu:</label>
+      <select id="format">
+        <option value="png">PNG</option>
+        <option value="jpeg">JPG</option>
+      </select><br>
+
+      <button id="cropBtn">Bật chế độ Crop</button>
+      <button id="undoCropBtn">Hoàn tác Crop</button>
+      <button id="saveBtn">Lưu ảnh</button>
+    </div>
+
+    <div class="canvas-container">
+      <canvas id="originalCanvas"></canvas>
+      <canvas id="editedCanvas"></canvas>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
