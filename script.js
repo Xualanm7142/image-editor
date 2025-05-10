@@ -12,16 +12,19 @@ const valBrightness = document.getElementById("val-brightness");
 const valContrast = document.getElementById("val-contrast");
 const valSaturate = document.getElementById("val-saturate");
 
+const filterSelect = document.getElementById("filter");
+const formatSelect = document.getElementById("format");
+
 const saveBtn = document.getElementById("saveBtn");
 const cropBtn = document.getElementById("cropBtn");
-const formatSelect = document.getElementById("format");
+const undoCropBtn = document.getElementById("undoCropBtn");
 
 let image = new Image();
 let cropMode = false;
 let cropStart = null;
-let cropRect = null;
+let originalEditedImageData = null;
 
-// Vẽ ảnh ban đầu
+// Hiển thị ảnh gốc và ảnh chỉnh sửa
 function drawOriginal() {
   originalCanvas.width = image.width;
   originalCanvas.height = image.height;
@@ -31,25 +34,37 @@ function drawOriginal() {
   updateEdited();
 }
 
-// Áp dụng filter lên canvas chỉnh sửa
+// Cập nhật ảnh đã chỉnh sửa
 function updateEdited() {
   eCtx.clearRect(0, 0, editedCanvas.width, editedCanvas.height);
-  eCtx.filter = `
-    brightness(${brightness.value}%)
-    contrast(${contrast.value}%)
-    saturate(${saturate.value}%)
-  `;
+
+  let filters = [
+    `brightness(${brightness.value}%)`,
+    `contrast(${contrast.value}%)`,
+    `saturate(${saturate.value}%)`
+  ];
+
+  const selectedFilter = filterSelect.value;
+
+  if (selectedFilter === "grayscale") {
+    filters.push("grayscale(100%)");
+  } else if (selectedFilter === "blur") {
+    filters.push("blur(3px)");
+  }
+
+  eCtx.filter = filters.join(" ");
   eCtx.drawImage(originalCanvas, 0, 0);
   updateLabels();
 }
 
+// Cập nhật nhãn hiển thị
 function updateLabels() {
   valBrightness.textContent = `${brightness.value}%`;
   valContrast.textContent = `${contrast.value}%`;
   valSaturate.textContent = `${saturate.value}%`;
 }
 
-// Đọc ảnh từ file
+// Tải ảnh
 upload.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -62,10 +77,13 @@ upload.addEventListener("change", (e) => {
   reader.readAsDataURL(file);
 });
 
-// Cập nhật khi thay đổi thông số
+// Thay đổi thông số
 [brightness, contrast, saturate].forEach(input => {
   input.addEventListener("input", updateEdited);
 });
+
+// Thay đổi bộ lọc
+filterSelect.addEventListener("change", updateEdited);
 
 // Lưu ảnh
 saveBtn.addEventListener("click", () => {
@@ -76,13 +94,13 @@ saveBtn.addEventListener("click", () => {
   link.click();
 });
 
-// Toggle chế độ crop
+// Bật chế độ crop
 cropBtn.addEventListener("click", () => {
   cropMode = !cropMode;
   cropBtn.textContent = cropMode ? "Chế độ Crop: Bật" : "Bật chế độ Crop";
 });
 
-// Bắt đầu chọn vùng crop
+// Crop ảnh
 editedCanvas.addEventListener("mousedown", (e) => {
   if (!cropMode) return;
   const rect = editedCanvas.getBoundingClientRect();
@@ -94,6 +112,9 @@ editedCanvas.addEventListener("mousedown", (e) => {
 
 editedCanvas.addEventListener("mouseup", (e) => {
   if (!cropMode || !cropStart) return;
+
+  originalEditedImageData = eCtx.getImageData(0, 0, editedCanvas.width, editedCanvas.height);
+
   const rect = editedCanvas.getBoundingClientRect();
   const endX = e.clientX - rect.left;
   const endY = e.clientY - rect.top;
@@ -105,7 +126,6 @@ editedCanvas.addEventListener("mouseup", (e) => {
 
   const croppedImage = eCtx.getImageData(x, y, width, height);
 
-  // Cập nhật canvas mới
   editedCanvas.width = width;
   editedCanvas.height = height;
   eCtx.putImageData(croppedImage, 0, 0);
@@ -113,4 +133,17 @@ editedCanvas.addEventListener("mouseup", (e) => {
   cropStart = null;
   cropMode = false;
   cropBtn.textContent = "Bật chế độ Crop";
+});
+
+// Hoàn tác crop
+undoCropBtn.addEventListener("click", () => {
+  if (!originalEditedImageData) {
+    alert("Không có ảnh nào để hoàn tác.");
+    return;
+  }
+
+  editedCanvas.width = originalEditedImageData.width;
+  editedCanvas.height = originalEditedImageData.height;
+  eCtx.putImageData(originalEditedImageData, 0, 0);
+  originalEditedImageData = null;
 });
