@@ -25,12 +25,13 @@ let cropEnd = null;
 let originalEditedImageData = null;
 
 function drawOriginal() {
+  // Đảm bảo kích thước canvas đúng với ảnh
   originalCanvas.width = image.width;
   originalCanvas.height = image.height;
   editedCanvas.width = image.width;
   editedCanvas.height = image.height;
   oCtx.drawImage(image, 0, 0);
-  updateEdited();
+  updateEdited();  // Cập nhật canvas sau khi vẽ ảnh
 }
 
 function updateEdited() {
@@ -76,6 +77,7 @@ function updateLabels() {
   valSaturate.textContent = `${saturate.value}%`;
 }
 
+// Xử lý sự kiện tải ảnh lên
 upload.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -94,6 +96,7 @@ upload.addEventListener("change", (e) => {
 
 filterSelect.addEventListener("change", updateEdited);
 
+// Lưu ảnh sau khi chỉnh sửa
 saveBtn.addEventListener("click", () => {
   const format = formatSelect.value;
   const link = document.createElement("a");
@@ -102,6 +105,7 @@ saveBtn.addEventListener("click", () => {
   link.click();
 });
 
+// Bật chế độ crop (cắt ảnh)
 cropBtn.addEventListener("click", () => {
   cropMode = !cropMode;
   cropBtn.textContent = cropMode ? "Chế độ Crop: Bật" : "Bật chế độ Crop";
@@ -119,4 +123,55 @@ editedCanvas.addEventListener("mousedown", (e) => {
 editedCanvas.addEventListener("mousemove", (e) => {
   if (!cropMode || !cropStart) return;
 
-  const rect =
+  const rect = editedCanvas.getBoundingClientRect();
+  cropEnd = {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  };
+
+  // Vẽ lại vùng crop
+  const width = cropEnd.x - cropStart.x;
+  const height = cropEnd.y - cropStart.y;
+  const cropBox = document.querySelector(".crop-box");
+  if (!cropBox) {
+    const newCropBox = document.createElement("div");
+    newCropBox.classList.add("crop-box");
+    document.body.appendChild(newCropBox);
+  }
+  document.querySelector(".crop-box").style.width = `${Math.abs(width)}px`;
+  document.querySelector(".crop-box").style.height = `${Math.abs(height)}px`;
+  document.querySelector(".crop-box").style.left = `${Math.min(cropStart.x, cropEnd.x)}px`;
+  document.querySelector(".crop-box").style.top = `${Math.min(cropStart.y, cropEnd.y)}px`;
+});
+
+editedCanvas.addEventListener("mouseup", (e) => {
+  if (!cropMode || !cropStart || !cropEnd) return;
+
+  const rect = editedCanvas.getBoundingClientRect();
+  const x = Math.min(cropStart.x, cropEnd.x);
+  const y = Math.min(cropStart.y, cropEnd.y);
+  const width = Math.abs(cropStart.x - cropEnd.x);
+  const height = Math.abs(cropStart.y - cropEnd.y);
+
+  const croppedImage = eCtx.getImageData(x, y, width, height);
+  editedCanvas.width = width;
+  editedCanvas.height = height;
+  eCtx.putImageData(croppedImage, 0, 0);
+
+  // Xóa vùng crop
+  document.querySelector(".crop-box").remove();
+
+  cropStart = null;
+  cropEnd = null;
+  cropMode = false;
+  cropBtn.textContent = "Bật chế độ Crop";
+});
+
+// Hoàn tác crop
+undoCropBtn.addEventListener("click", () => {
+  if (!originalEditedImageData) return;
+  editedCanvas.width = originalEditedImageData.width;
+  editedCanvas.height = originalEditedImageData.height;
+  eCtx.putImageData(originalEditedImageData, 0, 0);
+  originalEditedImageData = null;
+});
